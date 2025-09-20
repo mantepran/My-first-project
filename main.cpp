@@ -11,6 +11,8 @@ using std::vector;
 using std::setw;
 using std::left;
 using std::right;
+using std::fixed;
+using std::setprecision;
 
 struct Studentas{
     string vard;
@@ -33,6 +35,13 @@ int main () {
     }
     cout<<"Iveskite egzamina: "; cin>>Laik.egzas;
     Laik.rez= Laik.egzas*0.6 + double(sum)/double(Laik.paz.size()) *0.4;
-    
-    cout<<Laik.vard<<" | "<<Laik.pav<<" | "<<Laik.rez<<endl;
+
+    cout << fixed << setprecision(2);
+    cout << left << setw(15) << "Vardas"
+     << left << setw(15) << "Pavarde"
+     << right << setw(15) << "Galutinis (vid.)" << endl;
+    cout << "------------------------------------------" << endl;
+    cout << left << setw(15) << Laik.vard
+     << left << setw(15) << Laik.pav
+     << right << setw(15) << Laik.rez << endl;
 }
