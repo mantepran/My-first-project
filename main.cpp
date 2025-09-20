@@ -33,60 +33,61 @@ float mediana(vector<int> &paz) {
         return paz[dyd / 2];
     }
 }
-
-int main () {  
+Studentas ivesk() {
     Studentas Laik;
-    int sum = 0, n, m;
-    cout<<"Iveskite varda: "; cin>>Laik.vard;
-    cout<<"Iveskite pavarde: "; cin>>Laik.pav;
-    cout<<"Kiek pazymiu turi studentas? "; cin>>n;
-    if (n <= 0) {
-        cout<<"Klaida. Studentas turi turėti bent vieną pažymį!"<<endl;
-        return 1;
-    }
-    for (int i=0;i<n;i++){
-        cout<<"Iveskite "<<i+1<< "paz. is "<<n<<" : "; cin>>m;
+    int m;
+    cout << "Iveskite varda: "; cin >> Laik.vard;
+    cout << "Iveskite pavarde: "; cin >> Laik.pav;
+    cout << "Iveskite namu darbu pazymius (baigus iveskite 0):" << endl;
+    while (true) {
+        cin >> m;
+        if (m == 0) break;
+        if (m < 0 || m > 10) {
+            cout << "Klaida. Pazymys turi buti nuo 1 iki 10. Bandykite dar kartą: ";
+            continue;
+        }
         Laik.paz.push_back(m);
-        sum+=m;
     }
-    cout<<"Iveskite egzamina: "; cin>>Laik.egzas; cout<<endl;
-    
-    float vid = (float)(sum) / n;
-    float med = mediana(Laik.paz);
-    float rezVid = Laik.egzas * 0.6 + vid * 0.4;
-    float rezMed = Laik.egzas * 0.6 + med * 0.4;
-
+    if (Laik.paz.empty()) {
+        cout << "Klaida: studentas turi tureti bent viena pazymi!" << endl;
+        return ivesk();
+    }
+    cout << "Iveskite egzamina: "; cin >> Laik.egzas; cout<< endl;
+    return Laik;
+}
+int main () {  
+    vector<Studentas> Grupe;
+    for (int j = 0; j < 3; j++) {  
+        cout << "Iveskite " << j + 1 << " studenta:\n";
+        Grupe.push_back(ivesk());
+    }
+  
     cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
     cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
-
     int pasirinkimas;
     cin>>pasirinkimas;
-
     cout<<endl<<left<<setw(10)<<"Vardas"<<setw(10)<<"Pavarde";
 
-    if (pasirinkimas == 1) {
-        cout<<"Galutinis (Vid.)"<<endl;
-        cout<<"------------------------------------------"<<endl;
-        cout << left << setw(10) << Laik.vard
-            << setw(10) << Laik.pav
-            << setw(20) << fixed << setprecision(2) << rezVid << endl;
+    if (pasirinkimas == 1) cout<<"Galutinis (Vid.)";
+    else if (pasirinkimas == 2) cout << "Galutinis (Med.)";
+    else if (pasirinkimas == 3) cout << "Galutinis (Vid.) / Galutinis (Med.)";
+    cout << endl << "---------------------------------------------------" << endl;
 
-    } else if (pasirinkimas == 2) {
-        cout << "Galutinis (Med.)" << endl;
-        cout << "------------------------------------------" << endl;
-        cout << left << setw(10) << Laik.vard
-             << setw(10) << Laik.pav
-             << setw(20) << fixed << setprecision(2) << rezMed << endl;
+     for (auto temp : Grupe) {
+        float sum = 0;
+        for (int p : temp.paz) sum += p;
+        float vid = sum / temp.paz.size();
+        float med = mediana(temp.paz);
+        float rezVid = temp.egzas * 0.6 + vid * 0.4;
+        float rezMed = temp.egzas * 0.6 + med * 0.4;
 
-    } else if (pasirinkimas == 3) {
-        cout << "Galutinis (Vid.) / Galutinis (Med.)" << endl;
-        cout << "------------------------------------------" << endl;
-        cout << left << setw(10) << Laik.vard
-             << setw(10) << Laik.pav
-             << setw(20) << fixed << setprecision(2) << rezVid
-             << setw(20) << fixed << setprecision(2) << rezMed << endl;
-
-    } else {
-        cout << "Klaida. Pasirinktas netinkamas simbolis" << endl;
-    }
+        cout << left << setw(10) << temp.vard << setw(10) << temp.pav;
+        if (pasirinkimas == 1) cout << setw(15) << fixed << setprecision(2) << rezVid;
+        else if (pasirinkimas == 2) cout << setw(15) << fixed << setprecision(2) << rezMed;
+        else if (pasirinkimas == 3)
+            cout << setw(15) << fixed << setprecision(2) << rezVid
+                 << setw(15) << fixed << setprecision(2) << rezMed;
+        else cout << "Klaida. Pasirinktas netinkamas simbolis" << endl;
+        cout << endl;
+     }
 }
