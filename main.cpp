@@ -27,7 +27,7 @@ struct Studentas{
 int random(int min, int max) {
     return min + rand() % (max - min + 1);
 }
-float mediana(vector<int> &paz) {
+float mediana(vector<int> paz) {
     sort(paz.begin(), paz.end());
     int dyd = paz.size();
     if (dyd == 0) {
@@ -39,11 +39,11 @@ float mediana(vector<int> &paz) {
         return paz[dyd / 2];
     }
 }
-Studentas ivesk() {
+Studentas ivesk(const string &vard, const string &pav) {
     Studentas Laik;
+    Laik.vard = vard;
+    Laik.pav = pav;
     int m;
-    cout << "Iveskite varda: "; cin >> Laik.vard;
-    cout << "Iveskite pavarde: "; cin >> Laik.pav;
     cout << "Iveskite namu darbu pazymius (baigus iveskite 0):" << endl;
     while (true) {
         cin >> m;
@@ -56,15 +56,15 @@ Studentas ivesk() {
     }
     if (Laik.paz.empty()) {
         cout << "Klaida: studentas turi tureti bent viena pazymi!" << endl;
-        return ivesk();
+        return ivesk(vard, pav);
     }
     cout << "Iveskite egzamina: "; cin >> Laik.egzas; cout<< endl;
     return Laik;
 }
-Studentas iveskAtsitiktinai() {
+Studentas iveskAtsitiktinai(const string &vard, const string &pav) {
     Studentas Laik;
-    cout << "Iveskite varda: "; cin >> Laik.vard;
-    cout << "Iveskite pavarde: "; cin >> Laik.pav;
+    Laik.vard = vard;
+    Laik.pav = pav;
     int kiekNd = random(1, 10);
     for (int i = 0; i < kiekNd; i++) {
         Laik.paz.push_back(random(1, 10));
@@ -80,18 +80,38 @@ Studentas iveskAtsitiktinai() {
 int main () {  
     srand(time(0));
     vector<Studentas> Grupe;
-    for (int j = 0; j < 3; j++) {  
-        cout << "Iveskite " << j + 1 << " studenta:\n";
-        cout << "Ar norite generuoti pazymius atsitiktinai? (1 - taip, 0 - ne): ";
-        int pasirinkimas;
-        cin >> pasirinkimas;
+    int veiksmas;
 
-        if (pasirinkimas == 1) {
-            Grupe.push_back(iveskAtsitiktinai());
-        } else {
-            Grupe.push_back(ivesk());
+    while (true) {
+        cout << "Programos veiksmu meniu:" << endl;
+        cout << "1 - Prideti studenta" << endl;
+        cout << "2 - Rodyti rezultatus" << endl;
+        cout << "3 - Iseiti" << endl;
+        cout << "Pasirinkite: ";
+        cin >> veiksmas;
+
+        if (veiksmas == 1) {
+            string vard, pav;
+            cout << "Iveskite varda: ";
+            cin >> vard;
+            cout << "Iveskite pavarde: ";
+            cin >> pav;
+
+            int gen;
+            cout << "Ar generuoti pazymius atsitiktinai? (1 - taip, 0 - ne): ";
+            cin >> gen;
+
+            Studentas s;
+            if (gen == 1) s = iveskAtsitiktinai(vard, pav);
+            else s = ivesk(vard, pav);
+
+            if (!s.paz.empty()) Grupe.push_back(s);
         }
-    }
+        else if (veiksmas == 2) {
+            if (Grupe.empty()) {
+                cout << "Studentu sarasas tuscias." << endl << endl;
+                continue;
+            }
     cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
     cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
     int pasirinkimas;
@@ -117,7 +137,14 @@ int main () {
         else if (pasirinkimas == 3)
             cout << setw(15) << fixed << setprecision(2) << rezVid
                  << setw(15) << fixed << setprecision(2) << rezMed;
-        else cout << "Klaida. Pasirinktas netinkamas simbolis" << endl;
+        else 
+            cout << "Klaida. Pasirinktas netinkamas simbolis";
         cout << endl;
-     }
+            }
+        }
+        else if (veiksmas == 3) {
+            cout << "Programa baigia darba." << endl;
+            break;
+        }
+    }
 }
