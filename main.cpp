@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cstdlib> 
+#include <ctime> 
 
 using std::cout;
 using std::cin;
@@ -21,6 +23,10 @@ struct Studentas{
     vector<int> paz;
     int egzas;
     };
+   
+int random(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
 float mediana(vector<int> &paz) {
     sort(paz.begin(), paz.end());
     int dyd = paz.size();
@@ -55,13 +61,37 @@ Studentas ivesk() {
     cout << "Iveskite egzamina: "; cin >> Laik.egzas; cout<< endl;
     return Laik;
 }
+Studentas iveskAtsitiktinai() {
+    Studentas Laik;
+    cout << "Iveskite varda: "; cin >> Laik.vard;
+    cout << "Iveskite pavarde: "; cin >> Laik.pav;
+    int kiekNd = random(1, 10);
+    for (int i = 0; i < kiekNd; i++) {
+        Laik.paz.push_back(random(1, 10));
+    }
+    cout << "Sugeneruoti " << kiekNd << " namu darbu pazymiai." << endl;
+
+    Laik.egzas = random(1, 10);
+    cout << "Sugeneruotas egzamino pazymys: " << Laik.egzas << endl;
+
+    cout << endl;
+    return Laik;
+}
 int main () {  
+    srand(time(0));
     vector<Studentas> Grupe;
     for (int j = 0; j < 3; j++) {  
         cout << "Iveskite " << j + 1 << " studenta:\n";
-        Grupe.push_back(ivesk());
+        cout << "Ar norite generuoti pazymius atsitiktinai? (1 - taip, 0 - ne): ";
+        int pasirinkimas;
+        cin >> pasirinkimas;
+
+        if (pasirinkimas == 1) {
+            Grupe.push_back(iveskAtsitiktinai());
+        } else {
+            Grupe.push_back(ivesk());
+        }
     }
-  
     cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
     cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
     int pasirinkimas;
