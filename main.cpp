@@ -80,6 +80,32 @@ Studentas iveskAtsitiktinai(const string &vard, const string &pav) {
     cout << endl;
     return Laik;
 }
+vector<Studentas> nuskaitykFailoDuomenis(string failoVardas) {
+    vector<Studentas> sarasas;
+    ifstream fin(failoVardas);
+    if (!fin) {
+        return sarasas;
+    }
+    string header;
+    getline(fin, header); 
+    while (true) {
+        Studentas s;
+        if (!(fin >> s.vard >> s.pav)) break; 
+        vector<int> laik;
+        int paz;
+        while (fin >> paz) {
+            laik.push_back(paz);
+            if (fin.peek() == '\n') break; 
+        }
+        if (!laik.empty()) {
+            s.egzas = laik.back(); 
+            laik.pop_back();
+            s.paz = laik;
+        }
+        sarasas.push_back(s);
+    }
+    return sarasas;
+}
 int main () {  
     srand(time(0));
     vector<Studentas> Grupe;
@@ -90,7 +116,7 @@ int main () {
         cout << "1 - Prideti studenta" << endl;
         cout << "2 - Rodyti rezultatus" << endl;
         cout << "3 - Iseiti" << endl;
-        cout << "4 - Nuskaityti faila:" << endl;
+        cout << "4 - Nuskaityti faila" << endl;
         cout << "Pasirinkite: ";
         cin >> veiksmas;
 
@@ -151,18 +177,14 @@ int main () {
             break;
         }
         else if (veiksmas == 4) {
-            ifstream fin("kursiokai.txt");   
-            if (!fin.is_open()) {
-                cout << "Nepavyko atidaryti failo" << endl;
-            }
-            else {
-                cout << "Failo turinys:" << endl;
-                string eilute;
-                while (getline(fin, eilute)) {
-                    cout << eilute << endl;
-                }
-                fin.close();
-            }
+            vector<Studentas> isFailo = nuskaitykFailoDuomenis("kursiokai.txt");
+            if (isFailo.empty()) {
+                cout << "Nepavyko atidaryti failo arba failas tuscias!" << endl;
+            } 
+        else {
+            Grupe.insert(Grupe.end(), isFailo.begin(), isFailo.end());
+            cout << "Failas nuskaitytas sekmingai." << endl;
+        }
             cout << endl;
         }
     }
