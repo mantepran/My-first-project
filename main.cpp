@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstdlib> 
 #include <ctime> 
+#include <fstream> 
 
 using std::cout;
 using std::cin;
@@ -16,6 +17,8 @@ using std::left;
 using std::right;
 using std::fixed;
 using std::setprecision;
+using std::ifstream;
+using std::getline;
 
 struct Studentas{
     string vard;
@@ -87,6 +90,7 @@ int main () {
         cout << "1 - Prideti studenta" << endl;
         cout << "2 - Rodyti rezultatus" << endl;
         cout << "3 - Iseiti" << endl;
+        cout << "4 - Nuskaityti faila:" << endl;
         cout << "Pasirinkite: ";
         cin >> veiksmas;
 
@@ -145,6 +149,21 @@ int main () {
         else if (veiksmas == 3) {
             cout << "Programa baigia darba." << endl;
             break;
+        }
+        else if (veiksmas == 4) {
+            ifstream fin("kursiokai.txt");   
+            if (!fin.is_open()) {
+                cout << "Nepavyko atidaryti failo" << endl;
+            }
+            else {
+                cout << "Failo turinys:" << endl;
+                string eilute;
+                while (getline(fin, eilute)) {
+                    cout << eilute << endl;
+                }
+                fin.close();
+            }
+            cout << endl;
         }
     }
 }
