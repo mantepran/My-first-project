@@ -106,6 +106,9 @@ vector<Studentas> nuskaitykFailoDuomenis(string failoVardas) {
     }
     return sarasas;
 }
+bool pagalPavarde(const Studentas& a, const Studentas& b) {
+    return a.pav < b.pav;
+}
 int main () {  
     srand(time(0));
     vector<Studentas> Grupe;
@@ -120,6 +123,7 @@ int main () {
         cout << "Pasirinkite: ";
         cin >> veiksmas;
 
+        sort(Grupe.begin(), Grupe.end(), pagalPavarde);
         if (veiksmas == 1) {
             string vard, pav;
             cout << "Iveskite varda: ";
