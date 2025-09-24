@@ -76,8 +76,6 @@ Studentas iveskAtsitiktinai(const string &vard, const string &pav) {
 
     Laik.egzas = random(1, 10);
     cout << "Sugeneruotas egzamino pazymys: " << Laik.egzas << endl;
-
-    cout << endl;
     return Laik;
 }
 vector<Studentas> nuskaitykFailoDuomenis(string failoVardas) {
@@ -105,6 +103,9 @@ vector<Studentas> nuskaitykFailoDuomenis(string failoVardas) {
         sarasas.push_back(s);
     }
     return sarasas;
+}
+bool pagalVarda(const Studentas& a, const Studentas& b) {
+    return a.vard < b.vard;
 }
 bool pagalPavarde(const Studentas& a, const Studentas& b) {
     return a.pav < b.pav;
@@ -146,13 +147,20 @@ int main () {
                 cout << "Studentu sarasas tuscias." << endl << endl;
                 continue;
             }
-            cout << "Kiek studentu parodyti? (0 = visus): ";
+            cout << "Kiek studentu parodyti? (0 - visus): ";
             int kiekParodyti;
             cin >> kiekParodyti;
     cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
     cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
     int pasirinkimas;
     cin>>pasirinkimas;
+    cout << "Rikiuoti pagal: 1 - Varda, 2 - Pavarde: ";
+    int rikiuoti;
+    cin >> rikiuoti;
+    if (rikiuoti == 1)
+        sort(Grupe.begin(), Grupe.end(), pagalVarda);
+    else
+        sort(Grupe.begin(), Grupe.end(), pagalPavarde);
     cout<<endl<<left<<setw(15)<<"Vardas"<<setw(15)<<"Pavarde";
 
     if (pasirinkimas == 1) cout<<"Galutinis (Vid.)";
