@@ -118,8 +118,8 @@ int main () {
         cout << "Programos veiksmu meniu:" << endl;
         cout << "1 - Prideti studenta" << endl;
         cout << "2 - Rodyti rezultatus" << endl;
-        cout << "3 - Iseiti" << endl;
-        cout << "4 - Nuskaityti faila" << endl;
+        cout << "3 - Nuskaityti faila" << endl;
+        cout << "4 - Iseiti" << endl;
         cout << "Pasirinkite: ";
         cin >> veiksmas;
 
@@ -153,7 +153,7 @@ int main () {
     cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
     int pasirinkimas;
     cin>>pasirinkimas;
-    cout<<endl<<left<<setw(10)<<"Vardas"<<setw(10)<<"Pavarde";
+    cout<<endl<<left<<setw(15)<<"Vardas"<<setw(15)<<"Pavarde";
 
     if (pasirinkimas == 1) cout<<"Galutinis (Vid.)";
     else if (pasirinkimas == 2) cout << "Galutinis (Med.)";
@@ -169,7 +169,7 @@ int main () {
         float rezVid = temp.egzas * 0.6 + vid * 0.4;
         float rezMed = temp.egzas * 0.6 + med * 0.4;
 
-        cout << left << setw(10) << temp.vard << setw(10) << temp.pav;
+        cout << left << setw(15) << temp.vard << setw(15) << temp.pav;
         if (pasirinkimas == 1) cout << setw(15) << fixed << setprecision(2) << rezVid;
         else if (pasirinkimas == 2) cout << setw(15) << fixed << setprecision(2) << rezMed;
         else if (pasirinkimas == 3)
@@ -182,19 +182,19 @@ int main () {
             }
         }
         else if (veiksmas == 3) {
-            cout << "Programa baigia darba." << endl;
-            break;
-        }
-        else if (veiksmas == 4) {
             vector<Studentas> isFailo = nuskaitykFailoDuomenis("kursiokai.txt");
             if (isFailo.empty()) {
                 cout << "Nepavyko atidaryti failo arba failas tuscias!" << endl;
             } 
-        else {
+            else {
             Grupe.insert(Grupe.end(), isFailo.begin(), isFailo.end());
             cout << "Failas nuskaitytas sekmingai." << endl;
+            }
+        }
+        else if (veiksmas == 4) {
+            cout << "Programa baigia darba." << endl;
+            break;
         }
             cout << endl;
-        }
     }
 }
