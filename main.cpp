@@ -146,6 +146,9 @@ int main () {
                 cout << "Studentu sarasas tuscias." << endl << endl;
                 continue;
             }
+            cout << "Kiek studentu parodyti? (0 = visus): ";
+            int kiekParodyti;
+            cin >> kiekParodyti;
     cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
     cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
     int pasirinkimas;
@@ -156,8 +159,9 @@ int main () {
     else if (pasirinkimas == 2) cout << "Galutinis (Med.)";
     else if (pasirinkimas == 3) cout << "Galutinis (Vid.) / Galutinis (Med.)";
     cout << endl << "---------------------------------------------------" << endl;
-
-     for (auto temp : Grupe) {
+    int kiek = 0;
+    for (auto temp : Grupe) {
+        if (kiekParodyti != 0 && kiek >= kiekParodyti) break;
         float sum = 0;
         for (int p : temp.paz) sum += p;
         float vid = sum / temp.paz.size();
@@ -174,6 +178,7 @@ int main () {
         else 
             cout << "Klaida. Pasirinktas netinkamas simbolis";
         cout << endl;
+        kiek++;
             }
         }
         else if (veiksmas == 3) {
