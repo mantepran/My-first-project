@@ -18,6 +18,8 @@ using std::right;
 using std::fixed;
 using std::setprecision;
 using std::ifstream;
+using std::fstream;
+using std::ofstream;
 using std::getline;
 
 struct Studentas{
@@ -150,44 +152,73 @@ int main () {
             cout << "Kiek studentu parodyti? (0 - visus): ";
             int kiekParodyti;
             cin >> kiekParodyti;
-    cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
-    cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
-    int pasirinkimas;
-    cin>>pasirinkimas;
-    cout << "Rikiuoti pagal: 1 - Varda, 2 - Pavarde: ";
-    int rikiuoti;
-    cin >> rikiuoti;
-    if (rikiuoti == 1)
-        sort(Grupe.begin(), Grupe.end(), pagalVarda);
-    else
-        sort(Grupe.begin(), Grupe.end(), pagalPavarde);
-    cout<<endl<<left<<setw(15)<<"Vardas"<<setw(15)<<"Pavarde";
-
-    if (pasirinkimas == 1) cout<<"Galutinis (Vid.)";
-    else if (pasirinkimas == 2) cout << "Galutinis (Med.)";
-    else if (pasirinkimas == 3) cout << "Galutinis (Vid.) / Galutinis (Med.)";
-    cout << endl << "---------------------------------------------------" << endl;
-    int kiek = 0;
-    for (auto temp : Grupe) {
-        if (kiekParodyti != 0 && kiek >= kiekParodyti) break;
-        float sum = 0;
-        for (int p : temp.paz) sum += p;
-        float vid = sum / temp.paz.size();
-        float med = mediana(temp.paz);
-        float rezVid = temp.egzas * 0.6 + vid * 0.4;
-        float rezMed = temp.egzas * 0.6 + med * 0.4;
-
-        cout << left << setw(15) << temp.vard << setw(15) << temp.pav;
-        if (pasirinkimas == 1) cout << setw(15) << fixed << setprecision(2) << rezVid;
-        else if (pasirinkimas == 2) cout << setw(15) << fixed << setprecision(2) << rezMed;
-        else if (pasirinkimas == 3)
-            cout << setw(15) << fixed << setprecision(2) << rezVid
-                 << setw(15) << fixed << setprecision(2) << rezMed;
-        else 
-            cout << "Klaida. Pasirinktas netinkamas simbolis";
-        cout << endl;
-        kiek++;
+            cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
+            cout<<"1 - Vidurkis"<< endl<<"2 - Mediana"<<endl<<"3 - Abu"<<endl;
+            int pasirinkimas;
+            cin>>pasirinkimas;
+            cout << "Rikiuoti pagal: 1 - Varda, 2 - Pavarde: ";
+            int rikiuoti;
+            cin >> rikiuoti;
+            if (rikiuoti == 1)
+                sort(Grupe.begin(), Grupe.end(), pagalVarda);
+            else
+                sort(Grupe.begin(), Grupe.end(), pagalPavarde);
+            
+            cout << "Kur norite spausdinti rezultatus? (1 - ekrane, 2 - i faila): ";
+            int kur;
+            cin >> kur;
+            ofstream failas;
+            if (kur == 2) {
+                failas.open("parodyta.txt");
+                if (!failas) {
+                    cout << "Nepavyko sukurti failo, spausdiname ekrane." << endl;
+                    kur = 1;
+                }
             }
+            if (kur == 1) {
+                cout<<endl<<left<<setw(15)<<"Vardas"<<setw(15)<<"Pavarde";
+                if (pasirinkimas == 1) cout<<"Galutinis (Vid.)";
+                else if (pasirinkimas == 2) cout << "Galutinis (Med.)";
+                else if (pasirinkimas == 3) cout << "Galutinis (Vid.) / Galutinis (Med.)";
+                cout << endl << "---------------------------------------------------" << endl;
+            }
+            else if (kur == 2) {
+                failas << left << setw(15) << "Vardas" << setw(15) << "Pavarde";
+                if (pasirinkimas == 1) failas << "Galutinis (Vid.)";
+                else if (pasirinkimas == 2) failas << "Galutinis (Med.)";
+                else if (pasirinkimas == 3) failas << "Galutinis (Vid.) / Galutinis (Med.)";
+                failas << endl << "---------------------------------------------------" << endl;
+            }        
+            int kiek = 0;
+            for (auto temp : Grupe) {
+                if (kiekParodyti != 0 && kiek >= kiekParodyti) break;
+                float sum = 0;
+                for (int p : temp.paz) sum += p;
+                float vid = sum / temp.paz.size();
+                float med = mediana(temp.paz);
+                float rezVid = temp.egzas * 0.6 + vid * 0.4;
+                float rezMed = temp.egzas * 0.6 + med * 0.4;
+                
+                if (kur == 1) {
+                    cout << left << setw(15) << temp.vard << setw(15) << temp.pav;
+                    if (pasirinkimas == 1) cout << setw(15) << fixed << setprecision(2) << rezVid;
+                    else if (pasirinkimas == 2) cout << setw(15) << fixed << setprecision(2) << rezMed;
+                    else if (pasirinkimas == 3)
+                        cout << setw(15) << fixed << setprecision(2) << rezVid
+                        << setw(15) << fixed << setprecision(2) << rezMed;
+                    cout << endl;
+                }
+                else if (kur == 2) {
+                    failas << left << setw(15) << temp.vard << setw(15) << temp.pav;
+                    if (pasirinkimas == 1) failas << setw(15) << fixed << setprecision(2) << rezVid;
+                    else if (pasirinkimas == 2) failas << setw(15) << fixed << setprecision(2) << rezMed;
+                    else if (pasirinkimas == 3)
+                        failas << setw(15) << fixed << setprecision(2) << rezVid
+                        << setw(15) << fixed << setprecision(2) << rezMed;
+                    failas << endl;
+                }
+                kiek++;
+            } failas.close();
         }
         else if (veiksmas == 3) {
             vector<Studentas> isFailo = nuskaitykFailoDuomenis("kursiokai.txt");
@@ -203,6 +234,6 @@ int main () {
             cout << "Programa baigia darba." << endl;
             break;
         }
-            cout << endl;
+        cout << endl;
     }
 }
