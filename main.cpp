@@ -106,6 +106,26 @@ vector<Studentas> nuskaitykFailoDuomenis(string failoVardas) {
     }
     return sarasas;
 }
+void atsitiktiniaiStudentai(const string& failoVardas, int irasuKiekis) {
+    ofstream fout(failoVardas);
+    if (!fout) {
+        cout << "Nepavyko sukurti failo: " << failoVardas << "\n";
+        return;
+    }
+    fout << left << "Vardas " << "Pavarde";
+    for (int i = 1; i <= 5; i++) fout << "ND" << i << " ";
+    fout << "Egzaminas" << "\n";
+
+    for (int i = 1; i <= irasuKiekis; i++) {
+        fout << "Vardas" << i << " Pavarde" << i << " ";
+        for (int j = 0; j < 5; j++) {
+            fout << random(1, 10) << " ";
+        }
+        fout << random(1, 10) << "\n";
+    }
+    fout.close();
+}
+
 bool pagalVarda(const Studentas& a, const Studentas& b) {
     return a.vard < b.vard;
 }
@@ -122,7 +142,8 @@ int main () {
         cout << "1 - Prideti studenta" << endl;
         cout << "2 - Rodyti rezultatus" << endl;
         cout << "3 - Nuskaityti faila" << endl;
-        cout << "4 - Iseiti" << endl;
+        cout << "4 - Sugeneruoti atsitiktinius failus" <<endl;
+        cout << "5 - Iseiti" << endl;
         cout << "Pasirinkite: ";
         cin >> veiksmas;
 
@@ -231,6 +252,14 @@ int main () {
             }
         }
         else if (veiksmas == 4) {
+            atsitiktiniaiStudentai("studentai_1000.txt", 1000);
+            atsitiktiniaiStudentai("studentai_10000.txt", 10000);
+            atsitiktiniaiStudentai("studentai_100000.txt", 100000);
+            atsitiktiniaiStudentai("studentai_1000000.txt", 1000000);
+            atsitiktiniaiStudentai("studentai_10000000.txt", 10000000);
+            cout << "Failai sekmingai sukurti." << endl << endl;
+        }
+        else if (veiksmas == 5) {
             cout << "Programa baigia darba." << endl;
             break;
         }
