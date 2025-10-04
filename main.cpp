@@ -132,6 +132,96 @@ bool pagalVarda(const Studentas& a, const Studentas& b) {
 bool pagalPavarde(const Studentas& a, const Studentas& b) {
     return a.pav < b.pav;
 }
+void rodytiRezultatus(const vector<Studentas>& Grupe, int pasirinkimas,
+    int kur, int kiekParodyti = 0, const string& failoVardas = "") {
+    if (Grupe.empty()) {
+        cout << "Studentų sarasas tuscias." << endl;
+        return;
+    }
+    ofstream failas;
+    if (kur == 2) {
+        if (failoVardas.empty())
+            failas.open("parodyta.txt");
+        else
+            failas.open(failoVardas);
+
+        if (!failas) {
+            cout << "Nepavyko sukurti failo, spausdiname ekrane." << endl;
+            kur = 1;
+        }
+    }
+    if (kur == 1) {
+        cout<<endl<<left<<setw(15)<<"Vardas"<<setw(15)<<"Pavarde";
+        if (pasirinkimas == 1) cout<<"Galutinis (Vid.)";
+        else if (pasirinkimas == 2) cout << "Galutinis (Med.)";
+        else if (pasirinkimas == 3) cout << "Galutinis (Vid.) / Galutinis (Med.)";
+        cout << endl << "---------------------------------------------------" << endl;
+    }
+    else if (kur == 2) {
+        failas << left << setw(15) << "Vardas" << setw(15) << "Pavarde";
+        if (pasirinkimas == 1) failas << "Galutinis (Vid.)";
+        else if (pasirinkimas == 2) failas << "Galutinis (Med.)";
+        else if (pasirinkimas == 3) failas << "Galutinis (Vid.) / Galutinis (Med.)";
+        failas << endl << "---------------------------------------------------" << endl;
+    }
+    int kiek = 0;
+    for (auto temp : Grupe) {
+        if (kiekParodyti != 0 && kiek >= kiekParodyti) break;
+        float sum = 0;
+        for (int p : temp.paz) sum += p;
+        float vid = sum / temp.paz.size();
+        float med = mediana(temp.paz);
+        float rezVid = temp.egzas * 0.6 + vid * 0.4;
+        float rezMed = temp.egzas * 0.6 + med * 0.4;
+                
+        if (kur == 1) {
+            cout << left << setw(15) << temp.vard << setw(15) << temp.pav;
+            if (pasirinkimas == 1) cout << setw(15) << fixed << setprecision(2) << rezVid;
+            else if (pasirinkimas == 2) cout << setw(15) << fixed << setprecision(2) << rezMed;
+            else if (pasirinkimas == 3)
+                cout << setw(15) << fixed << setprecision(2) << rezVid
+                << setw(15) << fixed << setprecision(2) << rezMed;
+            cout << endl;
+        }
+        else if (kur == 2) {
+            failas << left << setw(15) << temp.vard << setw(15) << temp.pav;
+            if (pasirinkimas == 1) failas << setw(15) << fixed << setprecision(2) << rezVid;
+            else if (pasirinkimas == 2) failas << setw(15) << fixed << setprecision(2) << rezMed;
+            else if (pasirinkimas == 3)
+                failas << setw(15) << fixed << setprecision(2) << rezVid
+                << setw(15) << fixed << setprecision(2) << rezMed;
+            failas << endl;
+        }
+        kiek++;
+    } failas.close();
+}
+void padalinti(const vector<Studentas>& Grupe) {
+    if (Grupe.empty()) {
+        cout << "Studentu sarasas tuscias. Pirmiausia nuskaitykite arba iveskite duomenis." << endl;
+        return;
+    }
+    cout << "Pasirinkite galutinio balo skaiciavimo buda: " << endl;
+    cout << "1 - Vidurkis" << endl << "2 - Mediana" << endl;
+    int pasirinkimas;
+    cin >> pasirinkimas;
+
+    vector<Studentas> vargsiukai;
+    vector<Studentas> galvociai;
+    for (auto& s : Grupe) {
+        float sum = 0;
+        for (int p : s.paz) sum += p;
+        float vid = sum / s.paz.size();
+        float med = mediana(s.paz);
+        float galutinis_balas = (pasirinkimas == 1) ? s.egzas * 0.6 + vid * 0.4 : s.egzas * 0.6 + med * 0.4;
+        if (galutinis_balas < 5.0)
+            vargsiukai.push_back(s);
+        else
+            galvociai.push_back(s);
+    }
+    rodytiRezultatus(vargsiukai, pasirinkimas, 2, 0, "vargsiukai.txt");
+    rodytiRezultatus(galvociai, pasirinkimas, 2, 0, "galvociai.txt");
+    cout << "Failai vargsiukai.txt ir galvociai.txt sekmingai sukurti" << endl;
+}
 int main () {  
     srand(time(0));
     vector<Studentas> Grupe;
@@ -143,7 +233,8 @@ int main () {
         cout << "2 - Rodyti rezultatus" << endl;
         cout << "3 - Nuskaityti faila" << endl;
         cout << "4 - Sugeneruoti atsitiktinius failus" <<endl;
-        cout << "5 - Iseiti" << endl;
+        cout << "5 - Padalinti studentus i vargsiukus ir galvocius" << endl;
+        cout << "6 - Iseiti" << endl;
         cout << "Pasirinkite: ";
         cin >> veiksmas;
 
@@ -188,61 +279,10 @@ int main () {
             cout << "Kur norite spausdinti rezultatus? (1 - ekrane, 2 - i faila): ";
             int kur;
             cin >> kur;
-            ofstream failas;
-            if (kur == 2) {
-                failas.open("parodyta.txt");
-                if (!failas) {
-                    cout << "Nepavyko sukurti failo, spausdiname ekrane." << endl;
-                    kur = 1;
-                }
-            }
-            if (kur == 1) {
-                cout<<endl<<left<<setw(15)<<"Vardas"<<setw(15)<<"Pavarde";
-                if (pasirinkimas == 1) cout<<"Galutinis (Vid.)";
-                else if (pasirinkimas == 2) cout << "Galutinis (Med.)";
-                else if (pasirinkimas == 3) cout << "Galutinis (Vid.) / Galutinis (Med.)";
-                cout << endl << "---------------------------------------------------" << endl;
-            }
-            else if (kur == 2) {
-                failas << left << setw(15) << "Vardas" << setw(15) << "Pavarde";
-                if (pasirinkimas == 1) failas << "Galutinis (Vid.)";
-                else if (pasirinkimas == 2) failas << "Galutinis (Med.)";
-                else if (pasirinkimas == 3) failas << "Galutinis (Vid.) / Galutinis (Med.)";
-                failas << endl << "---------------------------------------------------" << endl;
-            }        
-            int kiek = 0;
-            for (auto temp : Grupe) {
-                if (kiekParodyti != 0 && kiek >= kiekParodyti) break;
-                float sum = 0;
-                for (int p : temp.paz) sum += p;
-                float vid = sum / temp.paz.size();
-                float med = mediana(temp.paz);
-                float rezVid = temp.egzas * 0.6 + vid * 0.4;
-                float rezMed = temp.egzas * 0.6 + med * 0.4;
-                
-                if (kur == 1) {
-                    cout << left << setw(15) << temp.vard << setw(15) << temp.pav;
-                    if (pasirinkimas == 1) cout << setw(15) << fixed << setprecision(2) << rezVid;
-                    else if (pasirinkimas == 2) cout << setw(15) << fixed << setprecision(2) << rezMed;
-                    else if (pasirinkimas == 3)
-                        cout << setw(15) << fixed << setprecision(2) << rezVid
-                        << setw(15) << fixed << setprecision(2) << rezMed;
-                    cout << endl;
-                }
-                else if (kur == 2) {
-                    failas << left << setw(15) << temp.vard << setw(15) << temp.pav;
-                    if (pasirinkimas == 1) failas << setw(15) << fixed << setprecision(2) << rezVid;
-                    else if (pasirinkimas == 2) failas << setw(15) << fixed << setprecision(2) << rezMed;
-                    else if (pasirinkimas == 3)
-                        failas << setw(15) << fixed << setprecision(2) << rezVid
-                        << setw(15) << fixed << setprecision(2) << rezMed;
-                    failas << endl;
-                }
-                kiek++;
-            } failas.close();
-        }
+            rodytiRezultatus(Grupe, pasirinkimas, kur, kiekParodyti);
+        }  
         else if (veiksmas == 3) {
-            vector<Studentas> isFailo = nuskaitykFailoDuomenis("kursiokai.txt");
+            vector<Studentas> isFailo = nuskaitykFailoDuomenis("studentai_1000.txt");
             if (isFailo.empty()) {
                 cout << "Nepavyko atidaryti failo arba failas tuscias!" << endl;
             } 
@@ -257,9 +297,12 @@ int main () {
             atsitiktiniaiStudentai("studentai_100000.txt", 100000);
             atsitiktiniaiStudentai("studentai_1000000.txt", 1000000);
             atsitiktiniaiStudentai("studentai_10000000.txt", 10000000);
-            cout << "Failai sekmingai sukurti." << endl << endl;
+            cout << "Failai sekmingai sukurti." << endl;
         }
         else if (veiksmas == 5) {
+            padalinti(Grupe);
+        }
+        else if (veiksmas == 6) {
             cout << "Programa baigia darba." << endl;
             break;
         }
